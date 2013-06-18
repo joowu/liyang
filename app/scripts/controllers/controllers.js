@@ -1,1 +1,1 @@
-define(['controllers/main']);
+define(['controllers/qi_ming_chinese']);

@@ -1,0 +1,1 @@
+define(['services/ba_zi']);

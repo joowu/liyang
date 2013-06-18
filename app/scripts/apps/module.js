@@ -1,5 +1,9 @@
-define(['angular', 'commons/commons', 'models/models', 'controllers/controllers'], function (angular) {
+define(['angular', 'commons/commons', 'services/services', 'models/models', 'controllers/controllers'], function (angular) {
   'use strict';
 
-  return angular.module('app.apps', ['app.commons', 'app.models', 'app.controllers']);
+  var module = angular.module('app.apps', ['app.commons', 'app.services', 'app.models', 'app.controllers']);
+  module.constant('appsConfig', {
+    pathOfView: 'views/'
+  });
+  return module;
 });
