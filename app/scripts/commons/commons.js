@@ -1,0 +1,1 @@
+define(['commons/config', 'commons/menu', 'commons/message', 'commons/auth', 'commons/user']);
