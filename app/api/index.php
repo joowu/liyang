@@ -1,11 +1,10 @@
 <?php
-require 'lib/Slim/Slim.php';
-\Slim\Slim::registerAutoloader();
-
 date_default_timezone_set('America/Los_Angeles');
 
-$app = new \Slim\Slim();
-$app->add(new \Slim\Middleware\ContentTypes());
+require_once 'common/Config.php';
+\common\Config::registerAutoloader();
+
+$app = new \common\Rest();
 
 $app->get('/things', function() use ($app){
     get("things", $app);
@@ -15,8 +14,12 @@ $app->get('/users/current', function() use ($app) {
     get("user", $app);
 });
 $app->post('/users/login', function() use ($app) {
+    $entity = $app->request()->getBody();
+    if ($entity['userName'] == 'ktong') {
+        $app->halt(401, '{"_message": {"forUser": "login failed."}}');
+    }
     $app->setCookie('is_logon', 'true', '1 hour');
-    echo json_encode(array("status" => "success"));
+    return array("status" => "success");
 });
 $app->post('/users/logout', function() use ($app) {
     $app->deleteCookie('is_logon');
@@ -41,12 +44,12 @@ function post($app) {
     }
     $entity = $app->request()->getBody();
     $entity['id'] = 99;
-    echo json_encode($entity);
+    return $entity;
 }
 
 function put($app) {
     if ('true' != $app->getCookie('is_logon')) {
         $app->halt(401);
     }
-    echo json_encode($app->request()->getBody());
+    return $app->request()->getBody();
 }

@@ -1,8 +1,8 @@
-define(['angular', 'commons/module'], function (angular, commons) {
+define(['angular', 'commons/module', 'commons/auth'], function (angular, commons) {
   'use strict';
 
-  commons.factory('userService', ['$rootScope', '$http', 'authService', '$route', 'appConfig',
-    function ($scope, $http, authService, $route, appConfig) {
+  commons.factory('userService', ['$rootScope', '$http', 'authService', '$route', 'appConfig', 'messageService',
+    function ($scope, $http, authService, $route, appConfig, messageService) {
 
       appConfig.uriForUsers = angular.extend({
         current: appConfig.pathOfApi + 'users/current',
@@ -21,13 +21,18 @@ define(['angular', 'commons/module'], function (angular, commons) {
           });
 
       properties.login = function () {
-        $http.post(appConfig.uriForUsers.login, properties.user)
+        delete properties.message;
+        messageService.clear();
+
+        $http.post(appConfig.uriForUsers.login, properties.user, {ignoreAuthModule: true})
             .success(function () {
               $http.get(appConfig.uriForUsers.current)
                   .success(function (data) {
                     angular.copy(data, properties.user);
                     authService.loginConfirmed();
                   });
+            }).error(function() {
+              properties.message = messageService.message.content;
             });
       };
       properties.logout = function () {
@@ -53,7 +58,7 @@ define(['angular', 'commons/module'], function (angular, commons) {
   commons.filter('logon', ['userService',
     function (userService) {
       return function (user) {
-        return userService.user.id === '' + (user.id || user);
+        return user && userService.user.userName === '' + (user.userName || user);
       };
     }]);
 });

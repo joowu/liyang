@@ -66,7 +66,7 @@ define(['commons/module'], function (commons) {
                 var url = response.config.url;
                 var id = url.substring(url.lastIndexOf('/') + 1);
                 if (id.substring(0, 1) === '-') {
-                  message = null;
+                  message = false;
                 } else {
                   message += ' <a ng-click="undelete(' + id + ')">Undo</a>';
                 }
@@ -154,4 +154,11 @@ define(['commons/module'], function (commons) {
       }
     };
   }]);
+
+  commons.run(['$rootScope', 'messageService',
+    function ($scope, messageService) {
+      $scope.$on('$routeChangeSuccess', function () {
+        messageService.clear();
+      });
+    }]);
 });

@@ -1,0 +1,15 @@
+body {
+    padding-top: 44px;
+    padding-bottom: 5px;
+}
+
+.modal form {
+    margin: 0;
+}
+
+[global-message] span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
