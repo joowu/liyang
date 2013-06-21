@@ -1,0 +1,15 @@
+#page {
+    padding: 10px 5%;
+}
+
+#page .header {
+    color: #5A5A5A;
+    border-bottom: 1px groove #000000;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+#page .bazi {
+    font-size: 1.3em;
+    color: #FF9900;
+}

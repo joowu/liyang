@@ -1,9 +1,18 @@
-<div>
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
-  <ul class="icons-ul">
-      <li ng-repeat="thing in awesomeThings"><i class="icon-li icon-ok"></i>{{thing.name}}</li>
-  </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
+<div class="container-fluid">
+    <div class="header row-fluid">
+        <div class="input-prepend input-append span4">
+            <span class="add-on">生辰</span>
+            <input type="text" class="input-medium" ng-model="birthday" autofocus placeholder="格式：197001011232">
+            <button type="button" class="btn btn-primary" ng-click="calculate()">推算</button>
+        </div>
+        <div class="offset1 span3 bazi">
+            <div class="span2" ng-repeat="item in bazi">
+                <div>{{item[0]}}</div>
+                <div>{{item[1]}}</div>
+            </div>
+        </div>
+        <div class="span4">
+
+        </div>
+    </div>
 </div>

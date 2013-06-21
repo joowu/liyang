@@ -5,15 +5,18 @@ require_once 'common/Config.php';
 \common\Config::registerAutoloader();
 
 $app = new \common\Rest();
+$config = new \common\Config($app->getMode());
+\common\DB::config($config->get('database'));
 
-$app->get('/things', function() use ($app){
-    get("things", $app);
+$jieqi = new \app\Jieqi();
+$app->get('/jies/:time', function ($time) use ($app, $jieqi) {
+    return $jieqi->findJie($time);
 });
 
-$app->get('/users/current', function() use ($app) {
+$app->get('/users/current', function () use ($app) {
     get("user", $app);
 });
-$app->post('/users/login', function() use ($app) {
+$app->post('/users/login', function () use ($app) {
     $entity = $app->request()->getBody();
     if ($entity['userName'] == 'ktong') {
         $app->halt(401, '{"_message": {"forUser": "login failed."}}');
@@ -21,13 +24,14 @@ $app->post('/users/login', function() use ($app) {
     $app->setCookie('is_logon', 'true', '1 hour');
     return array("status" => "success");
 });
-$app->post('/users/logout', function() use ($app) {
+$app->post('/users/logout', function () use ($app) {
     $app->deleteCookie('is_logon');
 });
 
 $app->run();
 
-function get($name, $app) {
+function get($name, $app)
+{
     if ('true' != $app->getCookie('is_logon')) {
         $app->halt(401);
     }
@@ -38,7 +42,8 @@ function get($name, $app) {
     }
 }
 
-function post($app) {
+function post($app)
+{
     if ('true' != $app->getCookie('is_logon')) {
         $app->halt(401);
     }
@@ -47,7 +52,8 @@ function post($app) {
     return $entity;
 }
 
-function put($app) {
+function put($app)
+{
     if ('true' != $app->getCookie('is_logon')) {
         $app->halt(401);
     }

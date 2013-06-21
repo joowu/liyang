@@ -1,1 +1,1 @@
-define(['services/ba_zi']);
+define(['services/bazi']);

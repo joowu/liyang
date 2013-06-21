@@ -5,12 +5,7 @@ define(['apps/module'], function (apps) {
     $routeProvider.when('/', {redirectTo: '/name/chinese/qi'});
     $routeProvider.when('/name/chinese/qi', {
         templateUrl: appsConfig.pathOfView + 'qi_ming_chinese.html',
-        controller: 'QiMingChineseCtrl',
-        resolve: {
-          awesomeThings: ['Thing', function(Thing) {
-            return Thing.query();
-          }]
-        }
+        controller: 'QiMingChineseCtrl'
       });
   }]);
 });

@@ -1,1 +1,1 @@
-define(['models/thing']);
+define(['models/jie']);
