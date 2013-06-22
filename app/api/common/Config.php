@@ -3,7 +3,7 @@ namespace common;
 
 class Config
 {
-    private static $PATH = "../config/";
+    private static $PATH = "config/";
     private static $DEFAULT_NAME = "default";
     private $configuration;
 

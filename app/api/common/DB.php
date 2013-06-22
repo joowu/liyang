@@ -15,7 +15,7 @@ class DB {
     }
 
     public static function __callStatic($method, $arguments) {
-        $result = forward_static_call_array(array('Meekro', $method), $arguments);
+        $result = forward_static_call_array(array('\DB', $method), $arguments);
         if ($result) {
             $result = self::convert($result);
         }
