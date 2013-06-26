@@ -34,24 +34,12 @@ require.config({
       exports: '$'
     },
 
-    'bootstrap-responsive': {
-      deps: ['css!bootstrap']
-    },
-    'font-awesome': {
-      deps: ['css!bootstrap']
-    },
     'bootstrap-js': {
       deps: ['jquery', 'css!bootstrap', 'css!bootstrap-responsive', 'css!font-awesome']
     },
 
     'jquery-ui': {
-      deps: ['jquery']
-    },
-    'jquery-ui-bootstrap': {
-      deps: ['jquery-ui', 'css!bootstrap']
-    },
-    'jquery-ui-bootstrap-font-awesome': {
-      deps: ['jquery-ui-bootstrap', 'css!font-awesome']
+      deps: ['jquery', 'css!jquery-ui-bootstrap', 'css!jquery-ui-bootstrap-font-awesome']
     },
 
     angular: {

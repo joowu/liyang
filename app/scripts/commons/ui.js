@@ -1,5 +1,5 @@
 define(['angular',
-  'css!jquery-ui-bootstrap-font-awesome',
+  'jquery-ui',
   'select2',
   'angular-ui',
   'angular-ui-bootstrap',
