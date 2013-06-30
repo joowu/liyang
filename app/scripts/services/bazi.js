@@ -15,7 +15,7 @@ define(['underscore', 'services/module'], function (_, services) {
       var ofDay = [tianGanOfDay(allOfDay), diZhiOfDay(allOfDay)];
       var ofTime = [tianGanOfHour(ofDay[0], time), diZhiOfHour(time)];
 
-      return _.map([ofTime, ofDay, ofMonth, ofYear], function (item) {
+      return _.map([ofYear, ofMonth, ofDay, ofTime], function (item) {
         return [TIAN_GAN[item[0]], DI_ZHI[item[1]]];
       });
     };

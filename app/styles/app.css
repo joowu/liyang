@@ -11,8 +11,13 @@
 
 #page .bazi {
     font-size: 1.3em;
+    color: #000000;
+}
+
+#page .bazi .yuan {
     color: #FF9900;
 }
+
 
 #page .form-horizontal .control-label {
     width: 80px;

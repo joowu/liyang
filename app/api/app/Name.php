@@ -26,19 +26,18 @@ class Name
 
         if ($factors['danming']) {
             $sql = "select x.hz, x.bhs, x.nywx, t.xywx, x.flag
-	              from (select a.ls - $xs_bhs as bhs1
-                      from wsl a, wsl d
-                      where 1=1
-                        and " . ($factors['jie_rd'] ? " a.jx='吉' and " : "") . "a.ls > $xs_bhs and mod(a.ls,2)=1
-                        and d.jx= '吉' and a.ls - $xs_bhs = d.ls) as h
-                       join xmx x on x.bhs = h.bhs1
-                       join tangan t on t.yinyang=x.yinyang and t.wx=x.zxwx
-                  where 1=1
-                    and x.xs=0 and x.flag in (1,2) and x.nywx = '" . $factors['chars'][0]['nywx'] . "'
-                    " . ($factors['xywx'] ? " and x.yinyang=" . $factors['chars'][0]['xyyy_'] . " and x.zxwx='" . $factors['chars'][0]['xywx'] . "'" : "") . "
-                    " . ($factors['bihui'] ? " and x.hz not in ['" . implode("', '", $factors['bihui']) . "']" : "") . "
-   	              order by x.flag, x.hz";
-
+                    	              from (select a.ls - $xs_bhs as bhs1
+                                          from wsl a, wsl d
+                                          where 1=1
+                                            and a.jx='吉' and a.ls > $xs_bhs and mod(a.ls,2)=1
+                                            and " . ($factors['jie_rd'] ? " d.jx='吉' and " : "") . "a.ls - $xs_bhs = d.ls) as h
+                                           join xmx x on x.bhs = h.bhs1
+                                           join tangan t on t.yinyang=x.yinyang and t.wx=x.zxwx
+                                      where 1=1
+                                        and x.xs=0 and x.flag in (1,2) and x.nywx = '" . $factors['chars'][0]['nywx'] . "'
+                                        " . ($factors['xywx'] ? " and x.yinyang=" . $factors['chars'][0]['xyyy'] . " and x.zxwx='" . $factors['chars'][0]['xywx'] . "'" : "") . "
+                                        " . ($factors['bihui'] ? " and x.hz not in ['" . implode("', '", $factors['bihui']) . "']" : "") . "
+                       	              order by x.flag, x.hz";
             $characters = DB::query($sql);
             return array(
                 "characters" => $characters,
