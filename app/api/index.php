@@ -13,6 +13,11 @@ $app->get('/jies/:time', function ($time) use ($app, $jieqi) {
     return $jieqi->findJie($time);
 });
 
+$name = new \app\Name();
+$app->post('/chinese_names', function () use ($app, $name) {
+    return $name->findChineseName($app->request()->getBody());
+});
+
 $app->get('/users/current', function () use ($app) {
     get("user", $app);
 });

@@ -6,19 +6,19 @@ define(['apps/module', 'apps/chinese_name'], function (apps) {
     appConfig.menu = [
         {
             name: '起名（中文）',
-            url: '/qi_ming_chinese'
+            url: '/name/chinese/qi'
         },
         {
             name: '解名（中文）',
-            url: '/jie_ming_chinese'
+            url: '/name/chinese/jie'
         },
         {
             name: '起名（英文）',
-            url: '/qi_ming_english'
+            url: '/name/english/qi'
         },
         {
             name: '解名（英文）',
-            url: '/jie_ming_english'
+            url: '/name/english/jie'
         },
         {
             name: '八字',

@@ -13,3 +13,14 @@
     font-size: 1.3em;
     color: #FF9900;
 }
+
+#page .form-horizontal .control-label {
+    width: 80px;
+}
+#page .form-horizontal .controls {
+    margin-left: 100px;
+}
+
+#page .name {
+    float: left;
+}

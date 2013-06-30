@@ -7,11 +7,12 @@ use \DB as Meekro;
 
 class DB {
     public static function config($setting) {
-        Meekro::$host = $setting['host'];
+        Meekro::$host = $setting['host'] ;
         Meekro::$port = $setting['port'];
         Meekro::$user = $setting['user_name'];
         Meekro::$password = $setting['password'];
         Meekro::$dbName = $setting['db'];
+        Meekro::$encoding = $setting['encoding'];
     }
 
     public static function __callStatic($method, $arguments) {
