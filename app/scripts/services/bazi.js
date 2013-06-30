@@ -39,9 +39,9 @@ define(['underscore', 'services/module'], function (_, services) {
 
 
     //日干支以公元1900年3月1号为基数
-   var ganZhiOfDay = function (time) {
-      var now = new Date(time.year, time.month -1, time.day).getTime();
-      return Math.round((now - BASE_DAY)/ONE_DAY);
+    var ganZhiOfDay = function (time) {
+      var now = new Date(time.year, time.month - 1, time.day).getTime();
+      return Math.round((now - BASE_DAY) / ONE_DAY);
     };
     var tianGanOfDay = function (ganZhiOfDay) {
       return ganZhiOfDay % TIAN_GAN.length;

@@ -34,7 +34,6 @@ define(['services/module'], function (services) {
         value: '土'
       }
     ];
-    var LI_SHU = [33, 6, 8, 3, 15, 0, 126, 6, 24, 3];
 
     return {YIN_YANG: YIN_YANG, WU_XING: WU_XING};
   });

@@ -30,7 +30,7 @@ class Name
                                           from wsl a, wsl d
                                           where 1=1
                                             and a.jx='吉' and a.ls > $xs_bhs and mod(a.ls,2)=1
-                                            and " . ($factors['jie_rd'] ? " d.jx='吉' and " : "") . "a.ls - $xs_bhs = d.ls) as h
+                                            and " . ($factors['rd'] ? " d.jx='吉' and " : "") . "a.ls - $xs_bhs = d.ls) as h
                                            join xmx x on x.bhs = h.bhs1
                                            join tangan t on t.yinyang=x.yinyang and t.wx=x.zxwx
                                       where 1=1
@@ -52,8 +52,8 @@ class Name
 	              from (select a.ls - $xs_bhs as bhs1, b.ls - $xs_bhs as bhs2
                       from wsl a, wsl b, wsl c, wsl d
                       where 1=1
-                        and " . ($factors['jie_tr'] ? " a.jx='吉' and " : "") . "a.ls > $xs_bhs
-                        and " . ($factors['jie_td'] ? " b.jx='吉' and " : "") . "b.ls > $xs_bhs and mod(b.ls,2)=1
+                        and " . ($factors['tr'] ? " a.jx='吉' and " : "") . "a.ls > $xs_bhs
+                        and " . ($factors['td'] ? " b.jx='吉' and " : "") . "b.ls > $xs_bhs and mod(b.ls,2)=1
                         and c.jx= '吉' and mod (a.ls + b.ls - $xs_bhs * 2, 81) = c.ls
                         and d.jx= '吉' and mod (a.ls + b.ls - $xs_bhs, 81) = d.ls) as h
                        join xmx x on x.bhs = h.bhs1
