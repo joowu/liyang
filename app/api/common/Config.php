@@ -11,7 +11,7 @@ class Config
     {
         $this->configuration = parse_ini_file(self::$PATH . self::$DEFAULT_NAME . ".ini", true);
         if ($mode) {
-            $this->configuration = array_merge_recursive($this->configuration, parse_ini_file(self::$PATH . "$mode.ini", true));
+            $this->configuration = array_replace_recursive($this->configuration, parse_ini_file(self::$PATH . "$mode.ini", true));
         }
     }
 
