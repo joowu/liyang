@@ -13,12 +13,15 @@ class Name
 
         $sql = "SELECT x.hz, x.bhs, x.nywx, t.xywx, x.flag
                     FROM xmx x join tangan t on t.yinyang=x.yinyang and t.wx=x.zxwx
-                    where x.xs=1 and x.hz in %ls";
-        $lastCharacters = DB::query($sql, $factors['xingshi']);
+                    where x.xs=%i and x.hz = %s";
+        $firstCharacter = DB::queryFirstRow($sql, 1, $factors['xingshi'][0]);
+        $lastCharacters[] = $firstCharacter;
 
-        $xs_bhs = 0;
-        foreach ($lastCharacters as $character) {
-            $xs_bhs += $character['bhs'];
+        $xs_bhs = $firstCharacter['bhs'];
+        for($i=1; $i<count($factors['xingshi']); $i++) {
+            $secondCharacter = DB::queryFirstRow($sql, 0, $factors['xingshi'][$i]);
+            $lastCharacters[] = $secondCharacter;
+            $xs_bhs += $secondCharacter['bhs'];
         }
 
         if ($factors['danming']) {
