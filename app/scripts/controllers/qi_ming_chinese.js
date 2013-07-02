@@ -22,8 +22,8 @@ define(['angular', 'controllers/module'], function (angular, controllers) {
           year: parseInt($scope.birthday.substr(0, 4), 10),
           month: parseInt($scope.birthday.substr(4, 2), 10),
           day: parseInt($scope.birthday.substr(6, 2), 10),
-          hours: parseInt($scope.birthday.substr(8, 2), 10),
-          minutes: parseInt($scope.birthday.substr(10, 2), 10)
+          hour: parseInt($scope.birthday.substr(8, 2), 10),
+          minute: parseInt($scope.birthday.substr(10, 2), 10)
         };
 
         Jie.get({time: $scope.birthday}, function (jie) {

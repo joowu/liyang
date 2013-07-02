@@ -11,8 +11,8 @@
                 <input type="text" class="input-medium" ng-model="birthday" autofocus placeholder="格式：197001011232">
                 <button type="button" class="btn" ng-click="calculate()">推算</button>
             </div>
-            <div class="offset1 span3 bazi">
-                <div class="span2" ng-repeat="item in bazi">
+            <div class="span3 bazi">
+                <div class="span3" ng-repeat="item in bazi">
                     <div class="{{$index==2 && 'yuan'}}">{{item[0]}}</div>
                     <div>{{item[1]}}</div>
                 </div>

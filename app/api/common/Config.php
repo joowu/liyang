@@ -10,7 +10,7 @@ class Config
     public function __construct($mode = FALSE)
     {
         $this->configuration = parse_ini_file(self::$PATH . self::$DEFAULT_NAME . ".ini", true);
-        if ($mode) {
+        if ($mode && file_exists(self::$PATH . "$mode.ini")) {
             $this->configuration = array_replace_recursive($this->configuration, parse_ini_file(self::$PATH . "$mode.ini", true));
         }
     }

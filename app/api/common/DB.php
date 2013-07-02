@@ -12,7 +12,7 @@ class DB {
         Meekro::$user = $setting['user_name'];
         Meekro::$password = $setting['password'];
         Meekro::$dbName = $setting['db'];
-        Meekro::$encoding = $setting['encoding'];
+        Meekro::$encoding = array_key_exists('encoding', $setting) ? $setting['encoding']: 'utf8';
     }
 
     public static function __callStatic($method, $arguments) {
