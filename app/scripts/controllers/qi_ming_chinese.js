@@ -27,7 +27,12 @@ define(['angular', 'controllers/module'], function (angular, controllers) {
         };
 
         Jie.get({time: $scope.birthday}, function (jie) {
-          $scope.bazi = bazi.calculate(time, jie);
+          var result = bazi.calculate(time, jie);
+          $scope.bazi = result.bazi;
+          $scope.lishu = [];
+          for(var i=0; i< result.lishu.length/2; i++) {
+            $scope.lishu.push([result.lishu[i * 2], result.lishu[i * 2 + 1]]);
+          }
         });
       };
 

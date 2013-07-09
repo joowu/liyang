@@ -7,9 +7,15 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
 
     var calculate = function (time, jie) {
       var bazi = calculateBazi(time, jie);
-      return _.map(bazi, function (item) {
-        return [TIAN_GAN[(item[0] + 9) % TIAN_GAN.length], DI_ZHI[(item[1] + 11) % DI_ZHI.length ]];
-      });
+      var lishu = calculateLishu(bazi);
+      return {
+        bazi: _.map(bazi, function (item) {
+          return [TIAN_GAN[(item[0] + 9) % TIAN_GAN.length], DI_ZHI[(item[1] + 11) % DI_ZHI.length ]];
+        }),
+        lishu: _.map(lishu, function(lishu, index) {
+          return [TIAN_GAN[index], lishu];
+        })
+      };
     };
 
     var ONE_DAY = 1000 * 60 * 60 * 24;
@@ -57,6 +63,7 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
     ];
 
     var calculateLishu = function (bazi) {
+      console.log('bazi: ' + bazi);
       var lishus = _.map(bazi, function (item) {
         return {
           tiangan: {
@@ -73,6 +80,7 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
           }
         }
       });
+      console.log('initial: ' + angular.toJson(lishus));
 
       //basic zuoji and xinding lishu computation
       _.each(lishus, function (item, index) {
@@ -96,59 +104,185 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
         }
 
         var yifu = (item.tiangan.wuxing === item.dizhi.wuxing)
-            || ((item.tiangan.wuxing + 5 - item.dizhi.wuxing) % 5 === 1);
+          || ((item.tiangan.wuxing + 5 - item.dizhi.wuxing) % 5 === 1);
         if (index === 2) {
           yifu = yifu || (item.tiangan.wuxing === lishus[index - 1].dizhi.wuxing)
-              || ((item.tiangan.wuxing + 5 - lishus[index - 1].dizhi.wuxing) % 5 === 1)
+            || ((item.tiangan.wuxing + 5 - lishus[index - 1].dizhi.wuxing) % 5 === 1)
         }
         if (!yifu) {
           item.tiangan.lishu[item.tiangan.position] = 8;
         }
       });
+      console.log('after basic zuoji and xinding lishu: ' + angular.toJson(lishus));
 
       //fangju lishu computation
+      var hasSanhui = false;
       _.each([
         [0, 1, 2],
         [0, 1, 3],
         [0, 2, 3],
         [1, 2, 3]
       ], function (positions) {
-        var dizhis = _.map(positions, function (position) {
-          return lishus[position].dizhi.position;
-        });
-        if (sanhui(dizhis)) {
-          var wx_sanhui = sanhe(dizhis);
-          _.each(positions, function (position) {
-            if (_.some(positions, function (position) {
-              return lishus[position].tiangan.wuxing === wx_sanhui;
-            })) {
-              lishus[position].dizhi.lishu = angular.copy(ALL_ZERO);
-              lishus[position].dizhi.lishu[2 * wx_sanhui] = 18;
-              lishus[position].dizhi.lishu[2 * wx_sanhui - 1] = 18;
-            } else {
-              var benqi = lishus[position].dizhi.lishu[lishus[position].dizhi.benqi];
-              lishus[position].dizhi.lishu = angular.copy(ALL_ZERO);
-              lishus[position].dizhi.lishu[lishus[position].dizhi.benqi] = benqi;
-            }
-          });
+        var dizhis = extractDizhis(lishus, positions);
+        if (calculateSanhui(dizhis)) {
+          hasSanhui = true;
+          var sanhui = calculateSanhe(dizhis);
+          if (matchWuxing(lishus, positions, sanhui)) {
+            setBase(lishus, positions, sanhui, 18);
+          } else {
+            useBenqi(lishus, positions);
+          }
         }
       });
+      console.log('after fangju lishu: ' + angular.toJson(lishus));
+
+      //fangju huitu
+      var positions = _.range(0, 3);
+      var dizhis = extractDizhis(lishus, positions);
+      if (_.isEmpty(_.without(dizhis, [2, 5, 8, 11]))) {
+        var sanhui = 3;
+        if (matchWuxing(lishus, positions, sanhui)) {
+          setBase(lishus, positions, sanhui, 13);
+        } else {
+          useBenqi(lishus, positions);
+        }
+      }
+      console.log('after fangju huitu: ' + angular.toJson(lishus));
+
+      //guaju lishu computation
+      var hasSanhe = false;
+      _.each([
+        [0, 1, 2],
+        [0, 1, 3],
+        [0, 2, 3],
+        [1, 2, 3]
+      ], function (positions) {
+        var dizhis = extractDizhis(lishus, positions);
+        var sanhe = calculateSanhe(dizhis);
+        if (sanhe) {
+          hasSanhe = true;
+          if (matchWuxing(lishus, positions, sanhe)) {
+            setBase(lishus, positions, sanhe, 12);
+          } else {
+            useBenqi(lishus, positions);
+          }
+        }
+      });
+      console.log('after guaju lishu: ' + angular.toJson(lishus));
+
+      if (!hasSanhui && !hasSanhe) {
+        //banguaju lishu computation
+        var bansanhes = _.map([
+          [0, 1],
+          [1, 2],
+          [2, 3]
+        ], function (positions) {
+          var dizhis = extractDizhis(lishus, positions);
+          return calculateSanhe(dizhis);
+        });
+        if (bansanhes[0] && bansanhes[1] && bansanhes[2]) {
+          if (matchWuxing(lishus, [0, 1], bansanhes[0])) {
+            setBase(lishus, positions, sanhui, 10);
+          } else {
+            useBenqi(lishus, positions);
+          }
+          if (matchWuxing(lishus, [1, 2], bansanhes[0])) {
+            setBase(lishus, positions, sanhui, 10);
+          } else {
+            useBenqi(lishus, positions);
+          }
+        } else if (bansanhes[0] && !bansanhes[1]) {
+          if (matchWuxing(lishus, [0, 1], bansanhes[0])) {
+            setBase(lishus, positions, sanhui, 10);
+          } else {
+            useBenqi(lishus, positions);
+          }
+        } else if (bansanhes[1] && !bansanhes[2]) {
+          if (matchWuxing(lishus, [1, 2], bansanhes[1])) {
+            setBase(lishus, positions, sanhui, 10);
+          } else {
+            useBenqi(lishus, positions);
+          }
+        } else if (bansanhes[2]) {
+          if (matchWuxing(lishus, [2, 3], bansanhes[2])) {
+            setBase(lishus, positions, sanhui, 10);
+          } else {
+            useBenqi(lishus, positions);
+          }
+        }
+        console.log('after banguaju lishu: ' + angular.toJson(lishus));
+
+        //zhichong zhihe lishu adjustment
+        _.each([
+          [0, 1],
+          [1, 2],
+          [2, 3]
+        ], function (positions) {
+          var dizhis = extractDizhis(lishus, positions);
+          if (isZhichong(dizhis)) {
+            _.each(positions, function (lishus, position) {
+              var dizhi = lishus[position].dizhi;
+              dizhi.lishu[item.dizhi.benqi] = Math.floor(dizhi.lishu[dizhi.benqi] / 2);
+            });
+          }
+          if (isZhihe(dizhis)) {
+            var dizhi = lishus[position].dizhi;
+            dizhi.lishu[item.dizhi.benqi] = Math.floor(dizhi.lishu[dizhi.benqi] * 3 / 2);
+          }
+        });
+        console.log('after zhichong zhihe lishu adjustment: ' + angular.toJson(lishus));
+
+        var result = angular.copy(ALL_ZERO);
+        _.each(lishus, function (item) {
+          _.each(item.tiangan.lishu, function (lishu, index) {
+            result[index] += lishu;
+          });
+          _.each(item.dizhi.lishu, function (lishu, index) {
+            result[index] += lishu;
+          });
+        });
+
+        return _.rest(result);
+      }
     };
 
-    var sanhui = function (dizhis) {
+    var useBenqi = function (lishus, positions) {
+      _.each(positions, function (position) {
+        var benqi = lishus[position].dizhi.lishu[lishus[position].dizhi.benqi];
+        lishus[position].dizhi.lishu = angular.copy(ALL_ZERO);
+        lishus[position].dizhi.lishu[lishus[position].dizhi.benqi] = benqi;
+      });
+    };
+    var setBase = function (lishus, positions, sanhui, base) {
+      _.each(positions, function (position) {
+        lishus[position].dizhi.lishu = angular.copy(ALL_ZERO);
+        lishus[position].dizhi.lishu[2 * sanhui] = base;
+        lishus[position].dizhi.lishu[2 * sanhui - 1] = base;
+      })
+    };
+    var extractDizhis = function (lishus, positions) {
+      return _.map(positions, function (position) {
+        return lishus[position].dizhi.position;
+      });
+    };
+    var matchWuxing = function (lishus, positions, sanhui) {
+      return _.some(positions, function (position) {
+        return lishus[position].tiangan.wuxing === sanhui;
+      });
+    };
+    var calculateSanhui = function (dizhis) {
       var numbers = _.map(dizhis,function (dizhi) {
         return dizhi % 12;
       }).sort();
 
       return numbers[0] % 3 === 0 && numbers[1] === numbers[0] + 1 && numbers[2] === numbers[0] + 2;
     };
-
-    var sanhe = function (dizhis) {
-      var numbers = _.map(dizhis, function (dizhi) {
+    var calculateSanhe = function (dizhis) {
+      var numbers = _.uniq(_.map(dizhis, function (dizhi) {
         return dizhi % 4;
-      });
+      }));
 
-      if (numbers[0] === numbers[1] && numbers[1] === numbers[2]) {
+      if (numbers.length === 1) {
         switch (numbers[0]) {
           case 0:
             return 1;
@@ -162,6 +296,12 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
       }
 
       return 0;
+    };
+    var isZhichong = function (dizhis) {
+      return (dizhis[0] + 6) % 12 === dizhis[1] % 6;
+    };
+    var isZhihe = function (dizhis) {
+      return dizhis[0] + dizhis[1] === 15 || dizhis[0] + dizhis[1] === 3;
     };
 
     //公元4年为甲子年

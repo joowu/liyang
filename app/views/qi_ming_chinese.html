@@ -4,7 +4,9 @@
             <div class="pull-right">
                 <button type="button" class="btn btn-primary"
                         ng-disabled="nameForm.$invalid || !name.chars[0].nywx || !(name.danming || name.chars[1].nywx)
-                            || (name.xywx && !(name.chars[0].xyyy && name.chars[0].xywx && (name.danming || (name.chars[1].xyyy && name.chars[1].xywx))))" ng-click="qiming()">起名</button>
+                            || (name.xywx && !(name.chars[0].xyyy && name.chars[0].xywx && (name.danming || (name.chars[1].xyyy && name.chars[1].xywx))))"
+                        ng-click="qiming()">起名
+                </button>
             </div>
             <div class="input-prepend input-append span4">
                 <span class="add-on">生辰</span>
@@ -17,8 +19,10 @@
                     <div>{{item[1]}}</div>
                 </div>
             </div>
-            <div class="span3">
-
+            <div class="span4 bazi">
+                <div class="span2" ng-repeat="item in lishu">
+                    <div ng-repeat="i in item"><span class="muted">{{i[0]}}</span><sub>{{i[1]}}</sub></div>
+                </div>
             </div>
         </div>
 
@@ -176,23 +180,19 @@
         </div>
     </form>
     <div class="row-fluid">
-        <div ng-repeat="firstName in names.firstNames">
-            <div class="name">
-                <span class="lastName" ng-repeat="character in names.lastName">
-                    <span class="hz">{{character.hz}}</span>
-                    <span class="bhs">{{character.bhs}}</span>
-                    <span class="nywx">{{character.nywx}}</span>
-                    <span class="xywx">{{character.xywx}}</span>
-                    <span class="flag">{{character.flag}}</span>
-                </span>
+        <div class="name" ng-repeat="firstName in names.firstNames">
+            <div class="lastName" ng-repeat="character in names.lastName">
+                <span class="bhs muted">{{character.bhs}}</span>
+                <span class="hz">{{character.hz}}</span>
+                <span class="nywx muted">{{character.nywx}}</span>
+                <span class="xywx muted">{{character.xywx}}</span>
+            </div>
 
-                <span class="firstName" ng-repeat="name in firstName" ng-init="character = names.characters[name]">
-                    <span class="hz">{{character.hz}}</span>
-                    <span class="bhs">{{character.bhs}}</span>
-                    <span class="nywx">{{character.nywx}}</span>
-                    <span class="xywx">{{character.xywx}}</span>
-                    <span class="flag">{{character.flag}}</span>
-                </span>
+            <div class="firstName" ng-repeat="name in firstName" ng-init="character = names.characters[name]">
+                <span class="bhs muted">{{character.bhs}}</span>
+                <span class="hz">{{character.hz}}</span>
+                <span class="nywx muted">{{character.nywx}}</span>
+                <span class="xywx muted">{{character.xywx}}</span>
             </div>
         </div>
     </div>
