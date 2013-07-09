@@ -10,9 +10,9 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
       var lishu = calculateLishu(bazi);
       return {
         bazi: _.map(bazi, function (item) {
-          return [TIAN_GAN[(item[0] + 9) % TIAN_GAN.length], DI_ZHI[(item[1] + 11) % DI_ZHI.length ]];
+          return [TIAN_GAN[item[0] - 1], DI_ZHI[item[1] -1]];
         }),
-        lishu: _.map(lishu, function(lishu, index) {
+        lishu: _.map(lishu, function (lishu, index) {
           return [TIAN_GAN[index], lishu];
         })
       };
@@ -26,7 +26,9 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
       var allOfDay = ganZhiOfDay(time);
       var ofDay = [tianGanOfDay(allOfDay), diZhiOfDay(allOfDay)];
       var ofTime = [tianGanOfHour(ofDay[0], time.hour), diZhiOfHour(time.hour)];
-      return [ofYear, ofMonth, ofDay, ofTime];
+      return _.map([ofYear, ofMonth, ofDay, ofTime], function(items) {
+        return [items[0] ? items[0] : TIAN_GAN.length, items[1] ? items[1] : DI_ZHI.length];
+      });
     };
 
     var TIAN_GAN_WU_XING = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5];
@@ -36,6 +38,7 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
 
     var ALL_ZERO = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     var TIAN_GAN_LI_SHU = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0],
@@ -48,6 +51,7 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36]
     ];
     var DI_ZHI_LI_SHU = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 27],
       [0, 0, 0, 0, 0, 0, 10, 6, 3, 3, 6],
       [0, 22, 0, 8, 0, 0, 0, 0, 0, 0, 0],
@@ -140,6 +144,7 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
       var positions = _.range(0, 3);
       var dizhis = extractDizhis(lishus, positions);
       if (_.isEmpty(_.without(dizhis, [2, 5, 8, 11]))) {
+        hasSanhui = true;
         var sanhui = 3;
         if (matchWuxing(lishus, positions, sanhui)) {
           setBase(lishus, positions, sanhui, 13);
@@ -178,7 +183,7 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
           [2, 3]
         ], function (positions) {
           var dizhis = extractDizhis(lishus, positions);
-          return calculateSanhe(dizhis);
+          return calculateBansanhe(dizhis);
         });
         if (bansanhes[0] && bansanhes[1] && bansanhes[2]) {
           if (matchWuxing(lishus, [0, 1], bansanhes[0])) {
@@ -220,30 +225,32 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
         ], function (positions) {
           var dizhis = extractDizhis(lishus, positions);
           if (isZhichong(dizhis)) {
-            _.each(positions, function (lishus, position) {
+            _.each(positions, function (position) {
               var dizhi = lishus[position].dizhi;
-              dizhi.lishu[item.dizhi.benqi] = Math.floor(dizhi.lishu[dizhi.benqi] / 2);
+              dizhi.lishu[dizhi.benqi] = Math.floor(dizhi.lishu[dizhi.benqi] / 2);
             });
           }
           if (isZhihe(dizhis)) {
-            var dizhi = lishus[position].dizhi;
-            dizhi.lishu[item.dizhi.benqi] = Math.floor(dizhi.lishu[dizhi.benqi] * 3 / 2);
+            _.each(positions, function (position) {
+              var dizhi = lishus[position].dizhi;
+              dizhi.lishu[dizhi.benqi] = Math.floor(dizhi.lishu[dizhi.benqi] * 3 / 2);
+            });
           }
         });
         console.log('after zhichong zhihe lishu adjustment: ' + angular.toJson(lishus));
-
-        var result = angular.copy(ALL_ZERO);
-        _.each(lishus, function (item) {
-          _.each(item.tiangan.lishu, function (lishu, index) {
-            result[index] += lishu;
-          });
-          _.each(item.dizhi.lishu, function (lishu, index) {
-            result[index] += lishu;
-          });
-        });
-
-        return _.rest(result);
       }
+
+      var result = angular.copy(ALL_ZERO);
+      _.each(lishus, function (item) {
+        _.each(item.tiangan.lishu, function (lishu, index) {
+          result[index] += lishu;
+        });
+        _.each(item.dizhi.lishu, function (lishu, index) {
+          result[index] += lishu;
+        });
+      });
+
+      return _.rest(result);
     };
 
     var useBenqi = function (lishus, positions) {
@@ -297,11 +304,20 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
 
       return 0;
     };
+    var calculateBansanhe = function (dizhis) {
+      if (dizhis[0] === dizhis[1]) {
+        return 0;
+      }
+      if (_.without([1, 10, 7, 4], dizhis).length === 4) {
+        return 0;
+      }
+      return calculateSanhe(dizhis);
+    }
     var isZhichong = function (dizhis) {
-      return (dizhis[0] + 6) % 12 === dizhis[1] % 6;
+      return ((dizhis[0] + 6) % 12) === (dizhis[1] % 12);
     };
     var isZhihe = function (dizhis) {
-      return dizhis[0] + dizhis[1] === 15 || dizhis[0] + dizhis[1] === 3;
+      return (dizhis[0] + dizhis[1] === 15) || (dizhis[0] + dizhis[1] === 3);
     };
 
     //公元4年为甲子年
