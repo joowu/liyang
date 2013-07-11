@@ -8,6 +8,7 @@ define(['underscore', 'angular', 'services/module'], function (_, angular, servi
     var calculate = function (time, jie) {
       var bazi = calculateBazi(time, jie);
       var lishu = calculateLishu(bazi);
+      bazi.reverse();
       return {
         bazi: _.map(bazi, function (item) {
           return [TIAN_GAN[item[0] - 1], DI_ZHI[item[1] -1]];
