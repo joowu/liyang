@@ -7,26 +7,28 @@
                             || (name.xywx && !(name.chars[0].xyyy && name.chars[0].xywx && (name.danming || (name.chars[1].xyyy && name.chars[1].xywx))))"
                         ng-click="qiming()">起名
                 </button>
+                <button type="button" class="btn btn-warning" ng-click="isHide = !isHide">{{isHide && '展开' || '收起'}}</button>
             </div>
             <div class="input-prepend input-append span4">
                 <span class="add-on">生辰</span>
                 <input type="text" class="input-medium" ng-model="birthday" autofocus placeholder="格式：197001011232">
                 <button type="button" class="btn" ng-click="calculate()">推算</button>
             </div>
-            <div class="span3 bazi">
+            <div class="span2 bazi">
                 <div class="span3" ng-repeat="item in bazi">
                     <div class="{{$index==1 && 'yuan'}}">{{item[0]}}</div>
                     <div>{{item[1]}}</div>
                 </div>
             </div>
-            <div class="span4 bazi">
+            <div class="span3 bazi">
                 <div class="span2" ng-repeat="item in lishu">
                     <div ng-repeat="i in item"><span class="muted">{{i[0]}}</span><sub>{{i[1]}}</sub></div>
                 </div>
             </div>
         </div>
 
-        <div class="row-fluid">
+        <div ng-hide="isHide">
+            <div class="row-fluid">
             <div class="control-group span2">
                 <label class="control-label">姓氏</label>
 
@@ -55,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <div class="row-fluid">
+            <div class="row-fluid">
             <div class="control-group span3">
                 <label class="control-label">纳音</label>
 
@@ -177,6 +179,7 @@
                     </label>
                 </div>
             </div>
+        </div>
         </div>
     </form>
     <div class="row-fluid">
