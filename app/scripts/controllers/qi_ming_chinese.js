@@ -7,6 +7,9 @@ define(['angular', 'controllers/module'], function (angular, controllers) {
         danming: false,
         bihui: '',
         bihu: '',
+        ming1: '',
+        ming2: '',
+
         chars: [
           {},
           {}
@@ -30,7 +33,7 @@ define(['angular', 'controllers/module'], function (angular, controllers) {
           var result = bazi.calculate(time, jie);
           $scope.bazi = result.bazi;
           $scope.lishu = [];
-          for(var i=0; i< result.lishu.length/2; i++) {
+          for (var i = 0; i < result.lishu.length / 2; i++) {
             $scope.lishu.push([result.lishu[i * 2], result.lishu[i * 2 + 1]]);
           }
         });
