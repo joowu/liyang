@@ -50,6 +50,11 @@ define(['angular', 'controllers/module'], function (angular, controllers) {
         $scope.name.ming2 = '';
       }, true);
 
+      $scope.$watch('birthday', function () {
+        delete $scope.bazi;
+        delete $scope.lishu;
+      });
+
       $scope.qiming = function () {
         ChineseName.save($scope.name, function (names) {
           if (names.characters) {
