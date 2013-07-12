@@ -47,6 +47,6 @@
     left: -50px;
 }
 
-#page #xingInput .btn {
+#page .btn[btn-radio]{
     padding: 4px 8px;
 }

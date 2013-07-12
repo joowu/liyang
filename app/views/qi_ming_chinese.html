@@ -1,46 +1,38 @@
 <div class="container-fluid">
-<form name="nameForm" class="form-horizontal">
-    <div class="header row-fluid">
-        <div class="pull-right">
-            <button type="button" class="btn btn-primary"
-                    ng-disabled="nameForm.$invalid || !name.chars[0].nywx || !(name.danming || name.chars[1].nywx)
-                            || (name.xywx && !(name.chars[0].xyyy && name.chars[0].xywx && (name.danming || (name.chars[1].xyyy && name.chars[1].xywx))))"
-                    ng-click="qiming()">起名
-            </button>
-            <button type="button" class="btn btn-warning" ng-click="isHide = !isHide">{{isHide && '展开' || '收起'}}
-            </button>
-        </div>
-        <div class="input-prepend input-append span3">
-            <span class="add-on">生辰</span>
-            <input type="text" class="span7" ng-model="birthday" autofocus placeholder="197001011232">
-            <button type="button" class="btn" ng-click="calculate()">推算</button>
-        </div>
-        <div class="span2 bazi">
-            <div class="span3" ng-repeat="item in bazi">
-                <div class="{{$index==1 && 'yuan'}}">{{item[0]}}</div>
-                <div>{{item[1]}}</div>
-            </div>
-        </div>
-        <div class="span4 bazi">
-            <div class="span2" ng-repeat="item in lishu">
-                <div ng-repeat="i in item"><span class="muted">{{i[0]}}</span><sub>{{i[1]}}</sub></div>
-            </div>
+<div class="header row-fluid">
+    <div class="pull-right">
+        <button type="button" class="btn btn-warning" ng-click="isHide = !isHide">{{isHide && '展开' || '收起'}}
+        </button>
+    </div>
+    <div class="input-prepend input-append span3">
+        <span class="add-on">生辰</span>
+        <input type="text" class="span7" ng-model="birthday" autofocus placeholder="197001011232">
+        <button type="button" class="btn" ng-click="calculate()">推算</button>
+    </div>
+    <div class="span2 bazi">
+        <div class="span3" ng-repeat="item in bazi">
+            <div class="{{$index==1 && 'yuan'}}">{{item[0]}}</div>
+            <div>{{item[1]}}</div>
         </div>
     </div>
-
-    <div id="xingInput" class="header" ng-hide="isHide">
+    <div class="span4 bazi">
+        <div class="span2" ng-repeat="item in lishu">
+            <div ng-repeat="i in item"><span class="muted">{{i[0]}}</span><sub>{{i[1]}}</sub></div>
+        </div>
+    </div>
+</div>
+<form name="nameForm" class="form-horizontal">
+    <div class="header" ng-hide="isHide">
         <div class="row-fluid">
-            <div class="control-group span3">
+            <div class="control-group span4">
                 <label class="control-label">姓氏</label>
 
                 <div class="controls">
-                    <input type="text" class="input-mini" ng-model="name.xingshi" required>
-                </div>
-            </div>
-            <div class="span1" align="center">
-                <div class="btn-group">
-                    <button type="button" class="btn" ng-model="name.danming" btn-radio="true">单名</button>
-                    <button type="button" class="btn" ng-model="name.danming" btn-radio="false">双名</button>
+                    <div class="input-append">
+                        <input type="text" class="input-mini" ng-model="name.xingshi" required>
+                        <button type="button" class="btn" ng-model="name.danming" btn-radio="true">单名</button>
+                        <button type="button" class="btn" ng-model="name.danming" btn-radio="false">双名</button>
+                    </div>
                 </div>
             </div>
             <div class="control-group span5">
@@ -50,9 +42,18 @@
                     <input type="text" class="input-large" ng-model="name.bihui">
                 </div>
             </div>
+            <div class="control-group span3">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-primary"
+                            ng-disabled="nameForm.$invalid || !name.chars[0].nywx || !(name.danming || name.chars[1].nywx)
+                            || (name.xywx && !(name.chars[0].xyyy && name.chars[0].xywx && (name.danming || (name.chars[1].xyyy && name.chars[1].xywx))))"
+                            ng-click="qiming()">起名
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="row-fluid">
-            <div class="control-group span3">
+            <div class="control-group span4">
                 <label class="control-label">纳音</label>
 
                 <div class="controls">
@@ -158,20 +159,16 @@
                     </div>
                 </div>
             </div>
-            <div class="control-group span4">
-                <label class="control-label">优化选型</label>
-
-                <div class="controls">
-                    <label class="checkbox" ui-if="name.danming">
-                        <input type="checkbox" ng-model="name.rd">对人地合格进行限制
-                    </label>
-                    <label class="checkbox" ui-if="!name.danming">
-                        <input type="checkbox" ng-model="name.tr">对天人合格进行限制
-                    </label>
-                    <label class="checkbox" ui-if="!name.danming">
-                        <input type="checkbox" ng-model="name.td">对天地合格进行限制
-                    </label>
-                </div>
+            <div class="control-group span3">
+                <label class="checkbox" ui-if="name.danming">
+                    <input type="checkbox" ng-model="name.rd">对人地合格进行限制
+                </label>
+                <label class="checkbox" ui-if="!name.danming">
+                    <input type="checkbox" ng-model="name.tr">对天人合格进行限制
+                </label>
+                <label class="checkbox" ui-if="!name.danming">
+                    <input type="checkbox" ng-model="name.td">对天地合格进行限制
+                </label>
             </div>
         </div>
     </div>
