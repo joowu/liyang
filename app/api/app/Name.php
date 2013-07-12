@@ -38,7 +38,7 @@ class Name
                                       where 1=1
                                         and x.xs=0 and x.flag in (1,2) and x.nywx = '" . $factors['chars'][0]['nywx'] . "'
                                         " . ($factors['xywx'] ? " and x.yinyang=" . $factors['chars'][0]['xyyy'] . " and x.zxwx='" . $factors['chars'][0]['xywx'] . "'" : "") . "
-                                        " . ($factors['bihui'] ? " and x.hz not in ['" . implode("', '", $factors['bihui']) . "']" : "") . "
+                                        " . ($factors['bihui'] ? " and x.hz not in ('" . implode("', '", $factors['bihui']) . "')" : "") . "
                        	              order by x.flag, x.hz";
       $characters = DB::query($sql);
       return array(
@@ -70,9 +70,10 @@ class Name
                     " . ($factors['bihui'] ? " and x.hz not in ('" . implode("', '", $factors['bihui']) . "')"
           . " and y.hz not in ('" . implode("', '", $factors['bihui']) . "')"
           : "")
-        . ($factors['ming1'] ? " and x.hz in ('" . implode("', '", $factors['ming1']) . "')" : "")
-        . ($factors['ming2'] ? " and y.hz in ('" . implode("', '", $factors['ming2']) . "')" : "")
-        . "
+        . " and (" . ($factors['ming1'] ? " x.hz in ('" . implode("', '", $factors['ming1']) . "')" : "1=0")
+        . ($factors['ming2'] ? " or y.hz in ('" . implode("', '", $factors['ming2']) . "')" : " or 1=0")
+        . ($factors['ming1'] || $factors['ming2'] ? "" : " or 1=1")
+        . ")
                 order by x.flag + y.flag, x.hz, y.hz";
       $firstNames = DB::queryFirstColumn($sql);
 
@@ -94,17 +95,18 @@ class Name
       $characters = DB::query($sql, $characters);
 
 
-      $result = array(
-        "firstCharacters" => $firstCharacters,
-        "secondCharacters" => $secondCharacters,
-        "characters" => $characters,
-        "count" => count($firstNames)
-      );
       if ($factors['ming1'] || $factors['ming2']) {
-        $result['lastName'] = $lastCharacters;
-        $result['firstNames'] = $firstNames;
+        return array(
+          "firstNames" => $firstNames
+        );
+      } else {
+        return array(
+          "firstCharacters" => $firstCharacters,
+          "secondCharacters" => $secondCharacters,
+          "characters" => $characters,
+          "count" => count($firstNames),
+          "lastName" => $lastCharacters);
       }
-      return $result;
     }
   }
 
@@ -116,6 +118,6 @@ class Name
     for ($i = 0; $i < $countOfLast; $i++) {
       $characters[] = iconv_substr($string, $i, 1, $charset);
     }
-    return $characters;
+    return count($characters) == 0 ? false : $characters;
   }
 }

@@ -39,14 +39,27 @@ define(['angular', 'controllers/module'], function (angular, controllers) {
         });
       };
 
+      $scope.$watch('name.xingshi + name.danming + name.bihui + name.xywx + name.rd + name.tr + name.td', function () {
+        delete $scope.names;
+        $scope.name.ming1 = '';
+        $scope.name.ming2 = '';
+      });
+      $scope.$watch('name.chars', function () {
+        delete $scope.names;
+        $scope.name.ming1 = '';
+        $scope.name.ming2 = '';
+      }, true);
+
       $scope.qiming = function () {
         ChineseName.save($scope.name, function (names) {
-          var characters = {};
-          angular.forEach(names.characters, function (character) {
-            characters[character.hz] = character;
-          });
-          names.characters = characters;
-          $scope.names = names;
+          if (names.characters) {
+            var characters = {};
+            angular.forEach(names.characters, function (character) {
+              characters[character.hz] = character;
+            });
+            names.characters = characters;
+          }
+          $scope.names = angular.extend($scope.names || {}, names);
         });
       };
     }]);

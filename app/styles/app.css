@@ -18,10 +18,10 @@
     color: #FF0000;
 }
 
-
 #page .form-horizontal .control-label {
     width: 80px;
 }
+
 #page .form-horizontal .controls {
     margin-left: 100px;
 }
@@ -30,16 +30,23 @@
     float: left;
     padding: 20px;
 }
+
 #page .name .hz {
     font-size: 2em;
 }
+
 #page .name .firstName,
-#page .name .lastName{
+#page .name .lastName {
     float: left;
     width: 100px;
 }
+
 #page .name .xywx {
     position: relative;
     top: 20px;
     left: -50px;
+}
+
+#page #xingInput .btn {
+    padding: 4px 8px;
 }
