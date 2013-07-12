@@ -9,9 +9,9 @@
                 </button>
                 <button type="button" class="btn btn-warning" ng-click="isHide = !isHide">{{isHide && '展开' || '收起'}}</button>
             </div>
-            <div class="input-prepend input-append span4">
+            <div class="input-prepend input-append span3">
                 <span class="add-on">生辰</span>
-                <input type="text" class="input-medium" ng-model="birthday" autofocus placeholder="格式：197001011232">
+                <input type="text" class="span7" ng-model="birthday" autofocus placeholder="197001011232">
                 <button type="button" class="btn" ng-click="calculate()">推算</button>
             </div>
             <div class="span2 bazi">
@@ -20,7 +20,7 @@
                     <div>{{item[1]}}</div>
                 </div>
             </div>
-            <div class="span3 bazi">
+            <div class="span4 bazi">
                 <div class="span2" ng-repeat="item in lishu">
                     <div ng-repeat="i in item"><span class="muted">{{i[0]}}</span><sub>{{i[1]}}</sub></div>
                 </div>
